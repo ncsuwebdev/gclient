@@ -1,0 +1,40 @@
+{
+    "name": "ncsu/gclient",
+    "description": "Package to provide easy facade access to the Google Client API",
+    "repositories": [
+        {
+        "type": "git",
+        "url": "https://github.com/jlmaners/laravel-credentials.git"
+        }
+    ],
+    "require": {
+        "google/apiclient": "^2.0@dev",
+        "google/apiclient-services": "dev-master",
+        "beyondcode/laravel-credentials": "dev-laravel5.7 as 1.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "NCSU\\GClient\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jason Maners",
+            "email": "jlmaners@ncsu.edu"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NCSU\\GClient\\GoogleClientServiceProvider"
+            ],
+            "aliases": {
+                "GClient": "NCSU\\GClient\\Facade"
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}
