@@ -16,12 +16,13 @@
     | https://developers.google.com/console
     |
     */
-    'client_id' => credentials('GOOGLE_CLIENT_ID', ''),
-    'client_secret' => credentials('GOOGLE_CLIENT_SECRET', ''),
-    'redirect_uri' => credentials('GOOGLE_REDIRECT_URI', ''),
-    'use_application_default_credentials' => false,
+    'client_id' => env('GOOGLE_CLIENT_ID', ''),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
+    'redirect_uri' => env('GOOGLE_REDIRECT_URI', ''),
+    'use_application_default_env' => false,
     'scopes' => [
         Google_Service_DataTransfer::ADMIN_DATATRANSFER,
+        Google_Service_Directory::ADMIN_DIRECTORY_CUSTOMER,
         Google_Service_Directory::ADMIN_DIRECTORY_DEVICE_CHROMEOS,
         Google_Service_Directory::ADMIN_DIRECTORY_DEVICE_MOBILE,
         Google_Service_Directory::ADMIN_DIRECTORY_DOMAIN,
@@ -45,8 +46,8 @@
     ],
     'access_type' => 'offline',
     'approval_prompt' => 'auto',
-    'credentials_file' => credentials('GOOGLE_CREDENTIALS_PATH'),
-    'token_file' => credentials('GOOGLE_TOKEN_PATH'),
+    'env_file' => env('GOOGLE_CREDENTIALS_PATH'),
+    'token_file' => env('GOOGLE_TOKEN_PATH'),
 
     /*
     |----------------------------------------------------------------------------
@@ -74,11 +75,11 @@
         */
         'enable' => true,
 
-        'username' => credentials('GOOGLE_SERVICE_ACCOUNT_NAME'),
+        'username' => env('GOOGLE_SERVICE_ACCOUNT_NAME'),
 
         /*
         | Path to service account json file
         */
-        'file' => credentials('GOOGLE_SERVICE_ACCOUNT_JSON'),
+        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON'),
     ],
 ];

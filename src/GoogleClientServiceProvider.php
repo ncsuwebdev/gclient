@@ -3,6 +3,7 @@
 namespace NCSU\GClient;
 
 use Illuminate\Support\ServiceProvider;
+use NCSU\GClient\Commands\AuthorizeGClient;
 
 class GoogleClientServiceProvider extends ServiceProvider
 {
@@ -14,8 +15,16 @@ class GoogleClientServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/configs/google.php' => config_path('google.php')
+            __DIR__.'/configs/gclient.php' => config_path('gclient.php')
+        ],'config-secure');
+
+        $this->publishes([
+            __DIR__.'/configs/gclient-env.php' => config_path('gclient.php')
         ],'config');
+
+        if($this->app->runningInConsole()) {
+            $this->commands( [AuthorizeGClient::class]);
+        }
     }
 
     /**
@@ -25,10 +34,15 @@ class GoogleClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
-       $this->mergeConfigFrom(__DIR__.'/configs/google.php', 'google');
+        if(class_exists('BeyondCode\Credentials\Credentials')) {
+            $this->mergeConfigFrom(__DIR__.'/configs/gclient.php', 'gclient');
+        } else {
+            $this->mergeConfigFrom(__DIR__.'/configs/gclient-env.php', 'gclient');
+        }
+
        $this->app->bind('GClient', function($app) {
-           dump($app['config']['google']);
-        	return new Client($app['config']['google']);
+           dump($app['config']['gclient']);
+        	return new Client($app['config']['gclient']);
         });
     }
 

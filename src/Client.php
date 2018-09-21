@@ -26,7 +26,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function __construct(array $config, $userEmail = '')
+    public function __construct(array $config, $method = 'auto', $userEmail = '')
     {
         if($this->credentialsMissing($config)) {
             throw new MissingCredentialsException('Google API Credentials missing. Please check your config file to ensure credentials are present.');
@@ -38,16 +38,21 @@ class Client
         $this->client->setApplicationName(array_get($config, 'application_name', ''));
 
         //authentication as service account
-        if (array_get($config, 'service.enable') == true && file_exists(base_path(array_get($config, 'token_file')))) {
-            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . array_get($config, 'service.file'));
-            $this->serviceAccountAuth($config);
-        } else {
+        if ( ( $method == 'auto' || $method == 'serviceaccount' ) &&
+             array_get( $config, 'service.enable' ) == true &&
+             file_exists( base_path( array_get( $config,'token_file' ) ) )
+        ) {
+            putenv( 'GOOGLE_APPLICATION_CREDENTIALS=' . array_get( $config, 'service.file' ) );
+            $this->serviceAccountAuth( $config );
+        } elseif ($method != 'serviceaccount') {
             $this->client->setScopes(array_get($config, 'scopes', []));
             try {
                 $this->normalOAuth2Auth($config, $userEmail);
             } catch (\Exception $e) {
                 throw $e;
             }
+        } else {
+            throw new MissingCredentialsException('Credentials are not available for specified method');
         }
     }
 
@@ -134,10 +139,10 @@ class Client
         } else {
             // Request authorization from the user.
             $authUrl = $this->client->createAuthUrl();
-            printf("Open the following link in your browser:\n%s\n", $authUrl);
+            printf("Using the Google account which you plan to authorize, open the following link in your browser:\n\n%s\n\n", $authUrl);
             print 'Enter verification code: ';
             $authCode = trim(fgets(STDIN));
-
+            printf("\n");
             // Exchange authorization code for an access token.
             $accessToken = $this->client->fetchAccessTokenWithAuthCode($authCode);
 
