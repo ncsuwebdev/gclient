@@ -22,37 +22,36 @@ class Client
      * Client constructor.
      *
      * @param array $config
+     * @param string $method
      * @param string $userEmail
      *
      * @throws \Exception
      */
-    public function __construct(array $config, $method = 'auto', $userEmail = '')
-    {
-        if($this->credentialsMissing($config)) {
-            throw new MissingCredentialsException('Google API Credentials missing. Please check your config file to ensure credentials are present.');
+    public function __construct( array $config, $method = 'auto', $userEmail = '' ) {
+        if ( $this->credentialsMissing( $config ) ) {
+            throw new MissingCredentialsException( 'Google API Credentials missing. Please check your config file to ensure credentials are present.' );
         }
 
-       $this->config = $config;
+        $this->config = $config;
 
         $this->client = new Google_Client();
-        $this->client->setApplicationName(array_get($config, 'application_name', ''));
+        $this->client->setApplicationName( array_get( $config, 'application_name', '' ) );
 
         //authentication as service account
         if ( ( $method == 'auto' || $method == 'serviceaccount' ) &&
-             array_get( $config, 'service.enable' ) == true &&
-             file_exists( base_path( array_get( $config,'token_file' ) ) )
+             array_get( $this->config, 'service.enable' ) == true
         ) {
             putenv( 'GOOGLE_APPLICATION_CREDENTIALS=' . array_get( $config, 'service.file' ) );
             $this->serviceAccountAuth( $config );
-        } elseif ($method != 'serviceaccount') {
-            $this->client->setScopes(array_get($config, 'scopes', []));
+        } elseif ( $method != 'serviceaccount' ) {
+            $this->client->setScopes( array_get( $config, 'scopes', [] ) );
             try {
-                $this->normalOAuth2Auth($config, $userEmail);
-            } catch (\Exception $e) {
-                throw $e;
+                $this->normalOAuth2Auth( $config, $userEmail );
+            } catch ( MissingCredentialsException $e ) {
+                throw new MissingCredentialsException($e->getMessage());
             }
         } else {
-            throw new MissingCredentialsException('Credentials are not available for specified method');
+            throw new MissingCredentialsException( 'Credentials are not available for specified method' );
         }
     }
 
@@ -100,6 +99,12 @@ class Client
         return true;
     }
 
+    /**
+     * @param array $config
+     * @param string $userEmail
+     *
+     * @throws MissingCredentialsException
+     */
     protected function normalOAuth2Auth(array $config, $userEmail = '')
     {
         $this->client->setAccessType(array_get($config, 'access_type', 'offline'));
@@ -109,7 +114,7 @@ class Client
             try {
                 $this->client->setAuthConfig(base_path(array_get($config, 'credentials_file', '')));
             } catch (\Exception $e) {
-                throw new \Exception('Could not load credentials file: ' . base_path(array_get($config, 'credentials_file', '')));
+                throw new MissingCredentialsException('Could not load credentials file: ' . base_path(array_get($config, 'credentials_file', '')));
             }
         } else {
             $this->client->setClientId(array_get($config, 'client_id'));
@@ -185,6 +190,8 @@ class Client
     {
         if ($username != '') {
             $this->client->setSubject($username);
+        } else {
+            $this->client->setSubject(array_get($this->config, 'service.username', $username));
         }
         $service = 'Google_Service_' . ucfirst($service);
         if (class_exists($service)) {

@@ -1,11 +1,12 @@
 <?php
+   $cred_prefix = (env('GOOGLE_ENV','') != '' ? env('GOOGLE_ENV').'_' : '');
    return [
     /*
     |----------------------------------------------------------------------------
     | Google application name
     |----------------------------------------------------------------------------
     */
-    'application_name' => credentials('GOOGLE_APP_NAME', 'Google Laravel App'),
+    'application_name' => env('GOOGLE_APP_NAME', 'Google Laravel App'),
 
     /*
     |----------------------------------------------------------------------------
@@ -16,10 +17,10 @@
     | https://developers.google.com/console
     |
     */
-    'client_id' => credentials('GOOGLE_CLIENT_ID', ''),
-    'client_secret' => credentials('GOOGLE_CLIENT_SECRET', ''),
-    'redirect_uri' => credentials('GOOGLE_REDIRECT_URI', ''),
-    'use_application_default_credentials' => false,
+    'client_id' => env($cred_prefix.'GOOGLE_CLIENT_ID', ''),
+    'client_secret' => env($cred_prefix.'GOOGLE_CLIENT_SECRET', ''),
+    'redirect_uri' => env($cred_prefix.'GOOGLE_REDIRECT_URI', ''),
+    'use_application_default_env' => false,
     'scopes' => [
         Google_Service_DataTransfer::ADMIN_DATATRANSFER,
         Google_Service_Directory::ADMIN_DIRECTORY_CUSTOMER,
@@ -46,8 +47,8 @@
     ],
     'access_type' => 'offline',
     'approval_prompt' => 'auto',
-    'credentials_file' => credentials('GOOGLE_CREDENTIALS_PATH'),
-    'token_file' => credentials('GOOGLE_TOKEN_PATH'),
+    'env_file' => env($cred_prefix.'GOOGLE_CREDENTIALS_PATH'),
+    'token_file' => env($cred_prefix.'GOOGLE_TOKEN_PATH'),
 
     /*
     |----------------------------------------------------------------------------
@@ -75,11 +76,11 @@
         */
         'enable' => true,
 
-        'username' => credentials('GOOGLE_SERVICE_ACCOUNT_NAME'),
+        'username' => env($cred_prefix.'GOOGLE_SERVICE_ACCOUNT_NAME'),
 
         /*
         | Path to service account json file
         */
-        'file' => credentials('GOOGLE_SERVICE_ACCOUNT_JSON'),
+        'file' => env($cred_prefix.'GOOGLE_SERVICE_ACCOUNT_JSON'),
     ],
 ];

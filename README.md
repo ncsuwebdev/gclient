@@ -42,32 +42,6 @@ If working with a G Suite domain and **Domain Wide Delegation** is needed, you'l
 You'll also need to authorize the API scope list for the service account client ID inside the G Suite Admin Console. 
 
 ### Initialize Configuration Variables ###
-We recommend the use of the [Laravel-Credentials](https://github.com/beyondcode/laravel-credentials) package to encrypt various details of the GClient configuration. You can also use the Laravel Credentials package to encrypt other configuration values.
-
-#### Using Laravel Credentials ####
-You may optionally run
-```
-php artisan vendor:publish --provider="NCSU\GClient\GoogleClientServiceProvider" --tag="config-secure"
-```
-To publish a copy of the default configuration values into your application. If you wish to alter any of the Google API Scopes used, you'll need to publish a configuration file.
-
-You'll need to specify the following configuration values in your credentials file using the `php artisan credentials:edit` command:
-```
-{
-    "GOOGLE_APP_NAME": "",
-    "GOOGLE_CLIENT_ID": "",
-    "GOOGLE_CLIENT_SECRET": "",
-    "GOOGLE_SERVICE_ACCOUNT_NAME": "",
-    "GOOGLE_SERVICE_ACCOUNT_JSON": "googleapi\/oauth2service.json",
-    "GOOGLE_CUSTOMER_ID": "",
-    "GOOGLE_DOMAIN_NAME": "",
-    "GOOGLE_SECRETS_FROM_BASE_PATH": "googleapi\/",
-    "GOOGLE_CREDENTIALS_PATH": "googleapi\/client_secrets.json",
-    "GOOGLE_TOKEN_PATH": "googleapi\/token.json",
-}
-```
-*Note, the credentials file should be valid JSON format, so be sure to escape any slashes in path names.*
-#### Using .env File ####
 You may optionally run
 ```
 php artisan vendor:publish --provider="NCSU\GClient\GoogleClientServiceProvider" --tag="config"
@@ -86,6 +60,11 @@ You'll need to configure the following configuration values in your .env file:
 - GOOGLE_SECRETS_FROM_BASE_PATH
 - GOOGLE_CREDENTIALS_PATH
 - GOOGLE_TOKEN_PATH
+
+#### Multiple Domains ####
+If you need to handle multiple domains but don't want to worry about constantly changing your .env or credentials file, you can set `GOOGLE_ENV` in your `.env` file to be a string that will prefix your config variables.
+
+For example if you set `GOOGLE_ENV='TESTING'` the config file will search for the necessary variables prefixed with `TESTING_` such as `TESTING_GOOGLE_CLIENT_ID`.
 
 ## Authorization ##
 To authorize your application to talk to the Google API run the following command:

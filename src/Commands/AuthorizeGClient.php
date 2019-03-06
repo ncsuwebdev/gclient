@@ -43,13 +43,13 @@ class AuthorizeGClient extends Command
             unlink(base_path(array_get(config('google'), 'token_file')));
         }
         try {
-            $client = new Client( config( 'google' ), 'serviceaccount' );
+            $client = new Client( config( 'gclient' ), 'auto' );
             //dd($client->getClient());
             $this->info('Credentials successfully authorized');
             try {
                 /** @var \Google_Service_Directory $directory */
                 $directory = $client->make( 'directory' );
-                $primaryDomain = $directory->customers->get( \credentials( 'GOOGLE_CUSTOMER_ID'));
+                $primaryDomain = $directory->customers->get( 'my_customer');
                 dump($primaryDomain);
             } catch(\Exception $e) {
                 $this->error($e->getMessage());
@@ -60,6 +60,6 @@ class AuthorizeGClient extends Command
         } catch(\Exception $e) {
             $this->error($e->getMessage());
         }
-
+        return;
     }
 }
