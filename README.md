@@ -39,7 +39,7 @@ Visit the [Google Developer Console](https://console.developers.google.com/) to 
 #### Domain Wide Delegation ###
 If working with a G Suite domain and **Domain Wide Delegation** is needed, you'll need to setup and configure a Service Account inside the Developer Console along with an associated user. Download the provided `oauth2service.json` file and save it to the `googleapi` directory.
 
-You'll also need to authorize the API scope list for the service account client ID inside the G Suite Admin Console. 
+You'll also need to authorize the API scope list for the service account client ID inside the G Suite Admin Console. [Check out the wiki](https://github.com/ncsuwebdev/gclient/wiki/Google-API-Scopes-for-Delegate-Admin-Access) for a default list to get you started.
 
 ### Initialize Configuration Variables ###
 You may optionally run
