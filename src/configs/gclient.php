@@ -44,6 +44,7 @@
         Google_Service_Classroom::CLASSROOM_ROSTERS,
         Google_Service_Drive::DRIVE,
         Google_Service_Gmail::MAIL_GOOGLE_COM,
+	    Google_Service_Groupssettings::APPS_GROUPS_SETTINGS,
     ],
     'access_type' => 'offline',
     'approval_prompt' => 'auto',
