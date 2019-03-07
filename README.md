@@ -1,6 +1,6 @@
 # Google API Client for Laravel #
 
-The `ncsu/gclient` package allows you to more easily integrate the use of Google APIs into your Laravel Application. This package's original focus was aiding in the development of applications that needed tighter integration with an organization's G Suite domain to provide domain management and support. However, this package can be used for other Google APIs.
+The `ncsuwebdev/gclient` package allows you to more easily integrate the use of Google APIs into your Laravel Application. This package's original focus was aiding in the development of applications that needed tighter integration with an organization's G Suite domain to provide domain management and support. However, this package can be used for other Google APIs.
 
 This package was inspired by the [Google API Client Wrapper](https://github.com/pulkitjalan/google-apiclient) package.
 
@@ -19,7 +19,7 @@ This package was inspired by the [Google API Client Wrapper](https://github.com/
 ## Installation ##
 You can install the package via composer:
 ```
-composer require ncsu/gclient
+composer require ncsuwebdev/gclient
 ```
 The package will automatically register itself.
 
