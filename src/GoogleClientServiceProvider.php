@@ -30,8 +30,6 @@ class GoogleClientServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom( __DIR__ . '/configs/gclient.php', 'gclient' );
 
         $this->app->bind( 'GClient', function ( $app ) {
-            dump( $app['config']['gclient'] );
-
             return new Client( $app['config']['gclient'] );
         } );
     }
