@@ -13,7 +13,7 @@ This package was inspired by the [Google API Client Wrapper](https://github.com/
 - [Authorization](#authorization)
 
 ## Requirements ##
-- PHP >7.1
+- PHP ^5.6|^7.0|^8.0
 - Laravel >5.6
 
 ## Installation ##
