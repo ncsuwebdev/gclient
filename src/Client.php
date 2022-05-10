@@ -35,16 +35,16 @@ class Client
         $this->config = $config;
 
         $this->client = new Google_Client();
-        $this->client->setApplicationName( array_get( $config, 'application_name', '' ) );
+        $this->client->setApplicationName( \Arr::get( $config, 'application_name', '' ) );
 
         //authentication as service account
         if ( ( $method == 'auto' || $method == 'serviceaccount' ) &&
-             array_get( $this->config, 'service.enable' ) == true
+             \Arr::get( $this->config, 'service.enable' ) == true
         ) {
-            putenv( 'GOOGLE_APPLICATION_CREDENTIALS=' . array_get( $config, 'service.file' ) );
+            putenv( 'GOOGLE_APPLICATION_CREDENTIALS=' . \Arr::get( $config, 'service.file' ) );
             $this->serviceAccountAuth( $config );
         } elseif ( $method != 'serviceaccount' ) {
-            $this->client->setScopes( array_get( $config, 'scopes', [] ) );
+            $this->client->setScopes( \Arr::get( $config, 'scopes', [] ) );
             try {
                 $this->normalOAuth2Auth( $config, $userEmail );
             } catch ( MissingCredentialsException $e ) {
@@ -82,14 +82,14 @@ class Client
     protected function serviceAccountAuth(array $config, $userEmail = '')
     {
         try {
-            $this->client->setScopes(array_get($config, 'scopes', []));
+            $this->client->setScopes(\Arr::get($config, 'scopes', []));
 
-            $this->client->setAuthConfig(base_path(array_get($config, 'service.file')));
+            $this->client->setAuthConfig(base_path(\Arr::get($config, 'service.file')));
 
             if ($userEmail != '') {
                 $this->client->setSubject($userEmail);
             } else {
-                $this->client->setSubject(array_get($config, 'service.username', $userEmail));
+                $this->client->setSubject(\Arr::get($config, 'service.username', $userEmail));
             }
         } catch (\Exception $e) {
             dd($e);
@@ -107,19 +107,19 @@ class Client
      */
     protected function normalOAuth2Auth(array $config, $userEmail = '')
     {
-        $this->client->setAccessType(array_get($config, 'access_type', 'offline'));
-        $this->client->setApprovalPrompt(array_get($config, 'approval_prompt', 'auto'));
+        $this->client->setAccessType(\Arr::get($config, 'access_type', 'offline'));
+        $this->client->setApprovalPrompt(\Arr::get($config, 'approval_prompt', 'auto'));
 
-        if (base_path(array_get($config, 'credentials_file') != '')) {
+        if (base_path(\Arr::get($config, 'credentials_file') != '')) {
             try {
-                $this->client->setAuthConfig(base_path(array_get($config, 'credentials_file', '')));
+                $this->client->setAuthConfig(base_path(\Arr::get($config, 'credentials_file', '')));
             } catch (\Exception $e) {
-                throw new MissingCredentialsException('Could not load credentials file: ' . base_path(array_get($config, 'credentials_file', '')));
+                throw new MissingCredentialsException('Could not load credentials file: ' . base_path(\Arr::get($config, 'credentials_file', '')));
             }
         } else {
-            $this->client->setClientId(array_get($config, 'client_id'));
-            $this->client->setClientSecret(array_get($config, 'client_secret'));
-            $this->client->setRedirectUri(array_get($config, 'redirect_uri'));
+            $this->client->setClientId(\Arr::get($config, 'client_id'));
+            $this->client->setClientSecret(\Arr::get($config, 'client_secret'));
+            $this->client->setRedirectUri(\Arr::get($config, 'redirect_uri'));
         }
 
         try {
@@ -136,9 +136,9 @@ class Client
      */
     protected function authorizeCredentials(array $config, $userEmail = '')
     {
-        if (file_exists(base_path(array_get($config, 'token_file')))) {
+        if (file_exists(base_path(\Arr::get($config, 'token_file')))) {
             $accessToken = json_decode(
-                file_get_contents(base_path(array_get($config, 'token_file')), true),
+                file_get_contents(base_path(\Arr::get($config, 'token_file')), true),
                 true
             );
         } else {
@@ -157,11 +157,11 @@ class Client
             }
 
             // Store the credentials to disk.
-            if (!file_exists(dirname(base_path(array_get($config, 'token_file'))))) {
-                mkdir(dirname(base_path(array_get($config, 'token_file'))), 0700, true);
+            if (!file_exists(dirname(base_path(\Arr::get($config, 'token_file'))))) {
+                mkdir(dirname(base_path(\Arr::get($config, 'token_file'))), 0700, true);
             }
-            file_put_contents(base_path(array_get($config, 'token_file')), json_encode($accessToken));
-            printf("Credentials saved to %s\n", base_path(array_get($config, 'token_file')));
+            file_put_contents(base_path(\Arr::get($config, 'token_file')), json_encode($accessToken));
+            printf("Credentials saved to %s\n", base_path(\Arr::get($config, 'token_file')));
         }
 
         $this->client->setAccessToken($accessToken);
@@ -170,7 +170,7 @@ class Client
         if ($this->client->isAccessTokenExpired()) {
             $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
             file_put_contents(
-                base_path(array_get($config, 'token_file')),
+                base_path(\Arr::get($config, 'token_file')),
                 json_encode($this->client->getAccessToken())
             );
         }
@@ -191,7 +191,7 @@ class Client
         if ($username != '') {
             $this->client->setSubject($username);
         } else {
-            $this->client->setSubject(array_get($this->config, 'service.username', $username));
+            $this->client->setSubject(\Arr::get($this->config, 'service.username', $username));
         }
         $service = 'Google_Service_' . ucfirst($service);
         if (class_exists($service)) {
@@ -228,7 +228,7 @@ class Client
      */
     protected function useAssertCredentials($userEmail = '')
     {
-        $serviceJsonUrl = array_get($this->config, 'service.file', '');
+        $serviceJsonUrl = \Arr::get($this->config, 'service.file', '');
         if (empty($serviceJsonUrl)) {
             return false;
         }
@@ -275,7 +275,7 @@ class Client
             return $credentialsMissing;
         }
 
-        if(array_get($config, 'service.file') != null) {
+        if(\Arr::get($config, 'service.file') != null) {
             $credentialsMissing = false;
             return $credentialsMissing;
         }

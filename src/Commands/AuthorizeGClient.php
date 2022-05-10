@@ -40,7 +40,7 @@ class AuthorizeGClient extends Command
     public function handle()
     {
         if($this->option('reauth')) {
-            unlink(base_path(array_get(config('google'), 'token_file')));
+            unlink(base_path(\Arr::get(config('google'), 'token_file')));
         }
         try {
             $client = new Client( config( 'gclient' ), 'auto' );
